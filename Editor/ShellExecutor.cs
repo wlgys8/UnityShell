@@ -19,6 +19,9 @@ namespace MS.Shell.Editor{
         private string _workingDir;
 
         [SerializeField]
+        private string _encoding = "";
+
+        [SerializeField]
         private List<KeyValuePair> _customEnvironmentVars;
 
         private Status _status = Status.Idle;
@@ -47,6 +50,9 @@ namespace MS.Shell.Editor{
                 foreach(var pair in _customEnvironmentVars){
                     option.environmentVars.Add(pair.key,pair.value);
                 }
+            }
+            if(!string.IsNullOrEmpty(_encoding)){
+                option.encoding = System.Text.Encoding.GetEncoding(_encoding);
             }
             var task = EditorShell.Execute(_command,option);
             task.onLog += (EditorShell.LogType logType,string log)=>{

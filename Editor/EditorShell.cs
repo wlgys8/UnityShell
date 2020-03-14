@@ -115,8 +115,8 @@ namespace MS.Shell.Editor{
                     start.RedirectStandardOutput = true;
                     start.RedirectStandardError = true;
                     start.RedirectStandardInput = true;
-                    start.StandardOutputEncoding = System.Text.UTF8Encoding.UTF8;
-                    start.StandardErrorEncoding = System.Text.UTF8Encoding.UTF8;
+                    start.StandardOutputEncoding = options.encoding;
+                    start.StandardErrorEncoding = options.encoding;
                     p = Process.Start(start);
 
                     p.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e) {
@@ -171,6 +171,7 @@ namespace MS.Shell.Editor{
         }
 
         public class Options{
+            public System.Text.Encoding encoding = System.Text.Encoding.UTF8;
             public string workDirectory = "./";
             public Dictionary<string,string> environmentVars = new Dictionary<string,string>();
         }
