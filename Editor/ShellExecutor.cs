@@ -36,7 +36,7 @@ namespace MS.Shell.Editor{
             }
         }
 
-        public EditorShell.Task Execute(){
+        public EditorShell.Operation Execute(){
             if(_status == Status.Running){
                 Debug.LogError("ShellExecutor is running. can not duplicate execute");
                 return null;

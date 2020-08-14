@@ -77,8 +77,8 @@ namespace MS.Shell.Editor{
                 _queue.Add(action);
             }
         }
-        public static Task Execute(string cmd,Options options = null){
-            Task task = new Task();
+        public static Operation Execute(string cmd,Options options = null){
+            Operation operation = new Operation();
             System.Threading.ThreadPool.QueueUserWorkItem(delegate(object state) {
                 Process p = null;
                 try{
@@ -137,7 +137,7 @@ namespace MS.Shell.Editor{
                         line = line.Replace("\\","/");
                             
                         Enqueue(delegate() {
-                            task.FeedLog(LogType.Log,line);
+                            operation.FeedLog(LogType.Log,line);
                         });
 
                     }while(true);
@@ -147,14 +147,14 @@ namespace MS.Shell.Editor{
                             break;
                         }
                         Enqueue(delegate() {
-                            task.FeedLog(LogType.Error,error);
+                            operation.FeedLog(LogType.Error,error);
                         });
                     }
                     p.WaitForExit();
                     var exitCode = p.ExitCode;
                     p.Close();
                     Enqueue(()=>{
-                        task.FireDone(exitCode);
+                        operation.FireDone(exitCode);
                     });
                 }catch(System.Exception e){
                     UnityEngine.Debug.LogException(e);
@@ -162,12 +162,12 @@ namespace MS.Shell.Editor{
                         p.Close();
                     }
                     Enqueue(()=>{
-                        task.FeedLog(LogType.Error,e.ToString());
-                        task.FireDone(-1);
+                        operation.FeedLog(LogType.Error,e.ToString());
+                        operation.FireDone(-1);
                     });
                 }
             });
-            return task;
+            return operation;
         }
 
         public class Options{
@@ -177,7 +177,7 @@ namespace MS.Shell.Editor{
         }
 
 
-        public class Task{
+        public class Operation{
 
             public event UnityAction<LogType,string> onLog;
             public event UnityAction<int> onExit;
