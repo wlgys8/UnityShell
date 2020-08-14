@@ -14,7 +14,7 @@ namespace MS.Shell.Editor{
             get{
                 #if UNITY_EDITOR_WIN
                 string app = "cmd.exe";
-                #elif UNITY_EDITOR_OSX
+                #elif UNITY_EDITOR_OSX || UNITY_EDITOR_LINUX
                 string app = "bash";
                 #else
                 string app = "unsupport-platform"
@@ -23,7 +23,7 @@ namespace MS.Shell.Editor{
             }
 	    }
 
-        #if UNITY_EDITOR_OSX
+        #if UNITY_EDITOR_OSX || UNITY_EDITOR_LINUX
         private static char PATH_SPLIT_CHAR = ':';
         #elif UNITY_EDITOR_WIN
         private static char PATH_SPLIT_CHAR = ';';
@@ -83,7 +83,7 @@ namespace MS.Shell.Editor{
                 Process p = null;
                 try{
                     ProcessStartInfo start = new ProcessStartInfo(shellApp);
-                    #if UNITY_EDITOR_OSX
+                    #if UNITY_EDITOR_OSX || UNITY_EDITOR_LINUX
                     start.Arguments = "-c";
                     #elif UNITY_EDITOR_WIN
                     start.Arguments = "/c";
