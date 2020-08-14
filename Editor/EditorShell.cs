@@ -176,9 +176,7 @@ namespace MS.Shell.Editor{
             public Dictionary<string,string> environmentVars = new Dictionary<string,string>();
         }
 
-
         public class Operation{
-
             public event UnityAction<LogType,string> onLog;
             public event UnityAction<int> onExit;
             internal void FeedLog(LogType logType,string log){
@@ -189,7 +187,6 @@ namespace MS.Shell.Editor{
                     this.hasError = true;
                 }
             }
-
             public bool hasError{
                 get;private set;
             }
@@ -208,6 +205,13 @@ namespace MS.Shell.Editor{
                 if(onExit != null){
                     onExit(exitCode);
                 }
+            }
+
+            /// <summary>
+            /// This method is intended for compiler use. Don't call it in your code.
+            /// </summary>
+            public CompilerServices.ShellOperationAwaiter GetAwaiter(){
+                return new CompilerServices.ShellOperationAwaiter(this);
             }
         }
 
