@@ -15,33 +15,42 @@ add follow line to `Packages/manifest.json`
 
 # Examples
 
-* execute command  `ls`
+- execute command  `ls`
 
-        var task = EditorShell.Execute("ls");
-        task.onExit += (exitCode)=>{
-            
-        };
-        task.onLog += (EditorShell.LogType LogType,string log)=>{
-            Debug.Log(log);
-        };
+``` csharp
+
+var operation = EditorShell.Execute("ls");
+operation.onExit += (exitCode)=>{
+    
+};
+operation.onLog += (EditorShell.LogType LogType,string log)=>{
+    Debug.Log(log);
+};
+
+int exitCode = await operation; //support async/await
+```
 
 * use `Options`
 
-        var options = new EditorShell.Options(){
-            workDirectory = "./",
-            encoding = System.Text.Encoding.GetEncoding("GBK"), 
-            environmentVars = new Dictionary<string, string>(){
-                {"PATH","usr/bin"},
-            }
-        };
+``` csharp
 
-        var task = EditorShell.Execute("ls",options);
-        task.onExit += (exitCode)=>{
-            
-        };
-        task.onLog += (EditorShell.LogType LogType,string log)=>{
-            Debug.Log(log);
-        };    
+var options = new EditorShell.Options(){
+    workDirectory = "./",
+    encoding = System.Text.Encoding.GetEncoding("GBK"), 
+    environmentVars = new Dictionary<string, string>(){
+        {"PATH","usr/bin"},
+    }
+};
+
+var operation = EditorShell.Execute("ls",options);
+operation.onExit += (exitCode)=>{
+    
+};
+operation.onLog += (EditorShell.LogType LogType,string log)=>{
+    Debug.Log(log);
+};  
+
+```  
 
 # Advanced
 
