@@ -40,6 +40,26 @@ namespace MS.Shell.Editor.Tests{
             Assert.True(task.Result == 1);
         }
 
+        [UnityTest]
+        public IEnumerator KillAsyncOperation(){
+            var operation = EditorShell.Execute("sleep 5",new EditorShell.Options());
+            KillAfter1Second(operation);
+            var task = GetOperationTask(operation);
+            yield return new TaskYieldable<int>(task);
+            Debug.Log("exit with code = " + task.Result);
+            Assert.True(task.Result == 137);
+        }
+
+        private async void KillAfter1Second(EditorShell.Operation operation){
+            await Task.Delay(1000);
+            operation.Kill();
+        }
+
+        private async Task<int> GetOperationTask(EditorShell.Operation operation){
+            int code = await operation; 
+            return code;
+        }
+
         private async Task<int> ExecuteShellAsync(string cmd){
             var task = EditorShell.Execute(cmd,new EditorShell.Options());
             int code = await task; 

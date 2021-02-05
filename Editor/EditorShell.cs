@@ -117,7 +117,13 @@ namespace MS.Shell.Editor{
                     start.RedirectStandardInput = true;
                     start.StandardOutputEncoding = options.encoding;
                     start.StandardErrorEncoding = options.encoding;
+
+                    if(operation.isKillRequested){
+                        return;
+                    }
+
                     p = Process.Start(start);
+                    operation.BindProcess(p);
 
                     p.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e) {
                         UnityEngine.Debug.LogError(e.Data);
@@ -135,12 +141,11 @@ namespace MS.Shell.Editor{
                             break;
                         }
                         line = line.Replace("\\","/");
-                            
                         Enqueue(delegate() {
                             operation.FeedLog(LogType.Log,line);
                         });
-
                     }while(true);
+
                     while(true){
                         string error = p.StandardError.ReadLine();
                         if(string.IsNullOrEmpty(error)){
@@ -179,6 +184,15 @@ namespace MS.Shell.Editor{
         public class Operation{
             public event UnityAction<LogType,string> onLog;
             public event UnityAction<int> onExit;
+
+            private Process _process;
+
+            private bool _killRequested = false;
+
+            internal void BindProcess(Process process){
+                _process = process;
+            }
+
             internal void FeedLog(LogType logType,string log){
                 if(onLog != null){
                     onLog(logType,log);
@@ -187,6 +201,26 @@ namespace MS.Shell.Editor{
                     this.hasError = true;
                 }
             }
+
+            public bool isKillRequested{
+                get{
+                    return _killRequested;
+                }
+            }
+
+            public void Kill(){
+                if(_killRequested){
+                    return;
+                }
+                _killRequested = true;
+                if(_process != null){
+                    _process.Kill();
+                    _process = null;
+                }else{
+                    FireDone(137);
+                }
+            }
+
             public bool hasError{
                 get;private set;
             }
