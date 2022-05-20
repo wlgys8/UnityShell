@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEditor;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace MS.Shell.Editor{
@@ -176,7 +177,7 @@ namespace MS.Shell.Editor{
         }
 
         public class Options{
-            public System.Text.Encoding encoding = System.Text.Encoding.UTF8;
+            public System.Text.Encoding encoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
             public string workDirectory = "./";
             public Dictionary<string,string> environmentVars = new Dictionary<string,string>();
         }
